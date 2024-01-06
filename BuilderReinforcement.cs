@@ -2,12 +2,13 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Microsoft.SqlServer.Server;
 using PluginBuildingConstructionReinforcement.Model.Create;
 using PluginBuildingConstructionReinforcement.Model.Selection;
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Windows;
+
 
 
 namespace PluginBuildingConstructionReinforcement
@@ -20,6 +21,7 @@ namespace PluginBuildingConstructionReinforcement
         private Document _document;
         private UIDocument _documentUI;
         private IList<Reference> _references;
+        private ElementFactory _factory;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -28,11 +30,11 @@ namespace PluginBuildingConstructionReinforcement
 
             _documentUI = uiapp.ActiveUIDocument;
             _document = _documentUI.Document;
-           
+
 
             try
             {
-               _references = SelectionTest();
+                _references = SelectionTest();
             }
             catch (Exception e)
             {
@@ -40,8 +42,22 @@ namespace PluginBuildingConstructionReinforcement
                 return Result.Failed;
             }
 
-            ElementFactory factory = new ElementFactory(_document);
-            BasicViewModel model = new MainViewWindowsViewModel(_document, _references, factory);
+            try
+            {
+                Transaction transaction = new Transaction(_document, "Create shape");
+                transaction.Start();
+
+                _factory  = new ElementFactory(transaction);
+                
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Revit", ex.ToString());
+            }
+            
+
+            BasicViewModel model = new MainViewWindowsViewModel(_document, _references, _factory);
 
 
             MainViewWindows window = new MainViewWindows(model);

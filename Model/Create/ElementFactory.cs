@@ -12,14 +12,14 @@ namespace PluginBuildingConstructionReinforcement.Model.Create
     [Transaction(TransactionMode.Manual)]
     public sealed class ElementFactory
     {
-        private readonly Document _document;
+        private readonly Transaction _transaction;
         private double _offsetRod;
         private double _lenghtBent;
         private double _rodDisplacement;
 
-        public ElementFactory(Document document) 
+        public ElementFactory(Transaction transaction) 
         {
-            _document = document;
+            _transaction = transaction;
         }
 
         public void SetData(double offsetRod, double lenghtBent, double rodDisplacement)
@@ -29,17 +29,17 @@ namespace PluginBuildingConstructionReinforcement.Model.Create
             _rodDisplacement = rodDisplacement;
         }
 
-        public void Building(IList<Reference> references)
+        public void Building(Document document, IList<Reference> references)
         {
             foreach (var element in references)
             {
-                BuildingAnotherShape(element);
+                BuildingAnotherShape(document, element);
             }
         }
       
-        private void BuildingAnotherShape(Reference reference)
+        private void BuildingAnotherShape(Document document,Reference reference)
         {
-            Element element = _document.GetElement(reference);
+            Element element = document.GetElement(reference);
 
             Location pointElement = element.Location;
             LocationPoint pointer = pointElement as LocationPoint;
@@ -86,16 +86,10 @@ namespace PluginBuildingConstructionReinforcement.Model.Create
 
             try
             {
-                Transaction transaction = new Transaction(_document, "Create shape");
-                transaction.Start();
-
                 for (int i = 0; i < Lines.Count; i++)
                 {
-                    CreateDirectShape(new List<GeometryObject>() { Lines[i] });
+                    CreateDirectShape(document, new List<GeometryObject>() { Lines[i] });
                 }
-
-
-                transaction.Commit();
             }
             catch (Exception ex)
             {
@@ -110,9 +104,9 @@ namespace PluginBuildingConstructionReinforcement.Model.Create
 
         }
 
-        private DirectShape CreateDirectShape(List<GeometryObject> geometryObject, BuiltInCategory category = BuiltInCategory.OST_GenericModel)
+        private DirectShape CreateDirectShape(Document document, List<GeometryObject> geometryObject, BuiltInCategory category = BuiltInCategory.OST_GenericModel)
         {
-            var directShape = DirectShape.CreateElement(_document, new ElementId(category));
+            var directShape = DirectShape.CreateElement(document, new ElementId(category));
 
             directShape.SetShape(geometryObject);
 

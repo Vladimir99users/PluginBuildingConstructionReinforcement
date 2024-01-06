@@ -76,7 +76,7 @@ namespace PluginBuildingConstructionReinforcement
         private void BuildingLittleBox()
         {
             _factory.SetData(OffsetRodFromLowerLevelPlate, LengthBentSection, RodDisplacement);
-            _factory.Building(_references);
+            _factory.Building(_document,  _references);
         }
     }
 }
