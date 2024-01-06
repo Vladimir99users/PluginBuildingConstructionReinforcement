@@ -90,6 +90,7 @@ namespace PluginBuildingConstructionReinforcement.Model.Create
                 {
                     CreateDirectShape(document, new List<GeometryObject>() { Lines[i] });
                 }
+                _transaction.Commit();
             }
             catch (Exception ex)
             {

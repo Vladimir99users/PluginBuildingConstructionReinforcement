@@ -42,20 +42,11 @@ namespace PluginBuildingConstructionReinforcement
                 return Result.Failed;
             }
 
-            try
-            {
-                Transaction transaction = new Transaction(_document, "Create shape");
-                transaction.Start();
 
-                _factory  = new ElementFactory(transaction);
-                
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("Revit", ex.ToString());
-            }
-            
+            Transaction transaction = new Transaction(_document, "Create shape");
+            transaction.Start();
+
+            _factory  = new ElementFactory(transaction);
 
             BasicViewModel model = new MainViewWindowsViewModel(_document, _references, _factory);
 
