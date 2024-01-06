@@ -3,10 +3,12 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Microsoft.SqlServer.Server;
+using PluginBuildingConstructionReinforcement.Model.Create;
 using PluginBuildingConstructionReinforcement.Model.Selection;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+
 
 namespace PluginBuildingConstructionReinforcement
 {
@@ -17,6 +19,7 @@ namespace PluginBuildingConstructionReinforcement
 
         private Document _document;
         private UIDocument _documentUI;
+        private IList<Reference> _references;
 
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
@@ -25,10 +28,11 @@ namespace PluginBuildingConstructionReinforcement
 
             _documentUI = uiapp.ActiveUIDocument;
             _document = _documentUI.Document;
+           
 
             try
             {
-                SelectionTest();
+               _references = SelectionTest();
             }
             catch (Exception e)
             {
@@ -36,12 +40,9 @@ namespace PluginBuildingConstructionReinforcement
                 return Result.Failed;
             }
 
+            ElementFactory factory = new ElementFactory(_document);
+            BasicViewModel model = new MainViewWindowsViewModel(_document, _references, factory);
 
-            
-
-        
-
-            BasicViewModel model = new MainViewWindowsViewModel(_document, this);
 
             MainViewWindows window = new MainViewWindows(model);
             window.Show();
@@ -54,7 +55,7 @@ namespace PluginBuildingConstructionReinforcement
         #region Selectable element from documents
         
 
-        public void SelectionTest()
+        public IList<Reference> SelectionTest()
         {
             ISelectionFilter selection = new ColumnSelection
                  (
@@ -69,10 +70,7 @@ namespace PluginBuildingConstructionReinforcement
 
                 );
 
-            foreach (var element in elements)
-            {
-                BuildingAnotherShape(element);
-            }
+            return elements;
         }
 
 

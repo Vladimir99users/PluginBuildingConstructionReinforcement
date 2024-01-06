@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
+using System.Windows;
 using Autodesk.Revit.DB;
 using PluginBuildingConstructionReinforcement.Model.Create;
 using PluginBuildingConstructionReinforcement.Model.Selection;
@@ -8,13 +11,15 @@ namespace PluginBuildingConstructionReinforcement
     public class MainViewWindowsViewModel : BasicViewModel
     {
         private readonly Document _document;
-        private BuilderReinforcement _selection;
+        private readonly ElementFactory _factory;
+        private readonly IList<Reference> _references;
 
 
-        public MainViewWindowsViewModel(Document document, BuilderReinforcement selection)
+        public MainViewWindowsViewModel(Document document, IList<Reference> references, ElementFactory factory)
         {
             _document = document;
-            _selection = selection;
+            _factory = factory;
+            _references = references;
         }
 
 
@@ -29,35 +34,38 @@ namespace PluginBuildingConstructionReinforcement
             }
         }
 
-        private string _axisX;
-        public string AxisX
+        //отступ стержня от нижнего уровня плиты
+        private float _offsetRodFromLowerLevelPlate;
+        public float OffsetRodFromLowerLevelPlate
         {
-            get => _axisX;
+            get => _offsetRodFromLowerLevelPlate;
             set
             {
-                _axisX = value;
+                _offsetRodFromLowerLevelPlate = value;
                 OnPropertyChanged();
             }
         }
 
-        private string _axisY;
-        public string AxisY
+        //длинна гнутого участка
+        private float _lengthBentSection;
+        public float LengthBentSection
         {
-            get => _axisY;
+            get => _lengthBentSection;
             set
             {
-                _axisY =value;
+                _lengthBentSection =value;
                 OnPropertyChanged();
             }
         }
 
-        private string _axisZ;
-        public string AxisZ
+        //Смещение стержня
+        private float _rodDisplacement;
+        public float RodDisplacement
         {
-            get => _axisZ;
+            get => _rodDisplacement;
             set
             {
-                _axisZ = value;
+                _rodDisplacement = value;
                 OnPropertyChanged();
             }
         }
@@ -67,7 +75,8 @@ namespace PluginBuildingConstructionReinforcement
 
         private void BuildingLittleBox()
         {
-           // _selection.SetShapeFromLocation();
+            _factory.SetData(OffsetRodFromLowerLevelPlate, LengthBentSection, RodDisplacement);
+            _factory.Building(_references);
         }
     }
 }

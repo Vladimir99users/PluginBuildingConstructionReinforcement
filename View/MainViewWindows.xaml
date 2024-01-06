@@ -35,15 +35,15 @@
             <Label Content=" Предусмотреть перегиб" FontSize="8"/>
         </WrapPanel>
         <WrapPanel Grid.Row="1" Grid.ColumnSpan="5" HorizontalAlignment="Stretch">
-            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=AxisX}" TextAlignment="Center" />
+            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=OffsetRodFromLowerLevelPlate}" TextAlignment="Center" />
             <Label Content=" отступ стержня от нижнего уровня плиты" FontSize="8"/>
         </WrapPanel>
         <WrapPanel Grid.Row="2" Grid.ColumnSpan="5" HorizontalAlignment="Stretch" >
-            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=AxisY}" TextAlignment="Center"/>
+            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=LengthBentSection}" TextAlignment="Center"/>
             <Label Content=" длинна гнутого участка" FontSize="8"/>
         </WrapPanel>
         <WrapPanel Grid.Row="3" Grid.ColumnSpan="5" HorizontalAlignment="Stretch">
-            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=AxisZ}" TextAlignment="Center"/>
+            <TextBox Width="20" VerticalAlignment="Center" Text="{Binding Path=RodDisplacement}" TextAlignment="Center"/>
             <Label Content=" смещение стержня" FontSize="8"/>
         </WrapPanel>
     </Grid>
